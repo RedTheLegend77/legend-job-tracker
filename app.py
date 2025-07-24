@@ -13,7 +13,8 @@ st.title("🛠️ Tech Job Entry - Legend Tracker")
 with st.form("job_form"):
     tech = st.selectbox("Select Tech", ["Shaw", "Cliff"])
     date = st.date_input("Date", value=datetime.today())
-    hours = st.number_input("Hours Worked", min_value=0.0, step=0.5)
+    actual_hours = st.number_input("Actual Time Spent (hours)", min_value=0.0, step=0.25)
+    billable_hours = st.number_input("Billable Hours to Customer", min_value=1.0, step=0.25, value=1.0)
     address = st.text_input("Job Address")
     job = st.text_input("Job Description")
     parts = st.text_input("Parts/Tools Used (comma separated)")
@@ -21,17 +22,23 @@ with st.form("job_form"):
     submitted = st.form_submit_button("Submit")
 
     if submitted:
+        tech_rate = 50 if tech == "Shaw" else 30
+        customer_total = billable_hours * 85
+        tech_earnings = actual_hours * tech_rate
+        your_earnings = customer_total - tech_earnings
+
         data = {
             "Date": [date.strftime("%Y-%m-%d")],
             "Tech": [tech],
-            "Hours": [hours],
+            "Actual Hours": [actual_hours],
+            "Billable Hours": [billable_hours],
             "Address": [address],
             "Job": [job],
             "Parts": [parts],
             "Return Visit": ["Yes" if return_visit else "No"],
-            "Customer Total": [hours * 85],
-            f"{tech} Earnings": [hours * (50 if tech == "Shaw" else 30)],
-            "Your Profit": [hours * 85 - hours * (50 if tech == "Shaw" else 30)],
+            "Customer Total": [customer_total],
+            f"{tech} Earnings": [tech_earnings],
+            "Your Profit": [your_earnings],
         }
 
         df = pd.DataFrame(data)
