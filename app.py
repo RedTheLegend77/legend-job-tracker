@@ -3,13 +3,14 @@ from datetime import datetime
 import pandas as pd
 import os
 
-# CSV file to store data
+# CONFIG
 DATA_FILE = "job_log.csv"
+ADMIN_CODE = "outlawboss123"  # change this to your private code
 
 # App Title
 st.title("🛠️ Tech Job Entry - Legend Tracker")
 
-# Form
+# --- MAIN FORM ---
 with st.form("job_form"):
     tech = st.selectbox("Select Tech", ["Shaw", "Cliff"])
     date = st.date_input("Date", value=datetime.today())
@@ -48,10 +49,11 @@ with st.form("job_form"):
         else:
             df.to_csv(DATA_FILE, index=False)
 
-        st.success("✅ Job entry submitted!")
+        st.success("✅ Job entry submitted! You’re good to go.")
 
-# Show recent entries
-if os.path.exists(DATA_FILE):
-    st.subheader("📋 Recent Job Logs")
-    log_df = pd.read_csv(DATA_FILE)
-    st.dataframe(log_df.tail(10))
+# --- HIDDEN ADMIN REPORT ACCESS ---
+with st.expander("🔒 Admin Login"):
+    code = st.text_input("Enter admin access code:", type="password")
+    if code == ADMIN_CODE:
+        st.subheader("📋 Recent Job Logs")
+        if os.path.exists(DATA_FILE):
