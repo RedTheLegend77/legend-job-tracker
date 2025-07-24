@@ -57,3 +57,9 @@ with st.expander("🔒 Admin Login"):
     if code == ADMIN_CODE:
         st.subheader("📋 Recent Job Logs")
         if os.path.exists(DATA_FILE):
+            log_df = pd.read_csv(DATA_FILE)
+            st.dataframe(log_df.tail(15))
+        else:
+            st.warning("No logs found yet.")
+    elif code != "":
+        st.error("❌ Incorrect access code")
